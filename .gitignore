@@ -6,7 +6,7 @@
 /storage/*.key
 /storage/pail
 /vendor
-.vite/deps
+.vite/
 .env
 .env.backup
 .env.production
