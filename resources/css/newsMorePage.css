@@ -1,0 +1,9 @@
+@import url(root.css);
+
+.newsMorePageContent{
+    padding: 50px;
+}
+
+.newsMoreCardContainer{
+    margin-top: 20px;
+}

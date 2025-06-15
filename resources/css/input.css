@@ -1,0 +1,62 @@
+@import url(root.css);
+
+/* Sort Time style */
+.sortTimeCustom{
+    display: flex;
+    align-items: center;
+}
+.sortTimeCustom input{
+    padding: 5px 15px;
+    border-radius: 4px;
+    border: 1px solid rgb(158, 158, 158);
+    cursor: pointer;
+}
+
+.sortTimeCustom span{
+    border: 1px solid black;
+    height: 0;
+    width: 10px;
+}
+
+.sortTimeCustom button{
+    padding: 5px 15px;
+    background-color: var(--color-secondary);
+    border: 1px solid rgb(158, 158, 158);
+    border-radius: 3px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* input text auth style */
+.inputTextAuth {
+    border-radius: 20px;
+    border: 1px solid #c0c0c0;
+    outline: 0 !important;
+    box-sizing: border-box;
+    padding: 12px 15px;
+}
+
+/* Input code style */
+.inputCode {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.code-input {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 15px;
+  font-weight: bold;
+  border: 2px solid #ccc;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.code-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}

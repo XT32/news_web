@@ -1,0 +1,11 @@
+@import url(root.css);
+
+.newsCardHomeContainer{
+    margin: 50px;
+}
+
+.view{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
