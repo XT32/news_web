@@ -1,4 +1,4 @@
-# --- Build Stage (Node for React/Vite) ---
+# Stage Node for React/Vite
 FROM node:20 AS nodebuild
 WORKDIR /app
 COPY resources/ resources/
@@ -6,13 +6,13 @@ COPY package*.json ./
 RUN npm install
 RUN npm run build
 
-# --- Build Stage (Composer for Laravel) ---
+# Stage Composer for Laravel
 FROM composer:2 AS composerbuild
 WORKDIR /app
 COPY . .
 RUN composer install --no-dev --optimize-autoloader
 
-# --- Production Stage ---
+# Production Stage
 FROM php:8.2-fpm
 
 # Install system dependencies
