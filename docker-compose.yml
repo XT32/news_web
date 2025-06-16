@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    image: news_web:latest
+    container_name: news_web_app
+    restart: unless-stopped
+    environment:
+      - APP_ENV=production
+      - APP_KEY=base64:YOUR_APP_KEY
+      - DB_HOST=db
+      - DB_DATABASE=news_web
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+    volumes:
+      - .:/var/www
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+  db:
+    image: mariadb:10.6
+    container_name: news_web_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: news_web
+      MYSQL_ROOT_PASSWORD: secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+volumes:
+  dbdata:
