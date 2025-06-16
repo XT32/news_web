@@ -1,21 +1,18 @@
 import '../../../css/card.css'
 
-const NewsCardHome = ({ title, image, date, author }) => {
-  return (
-      <div className="card">
-        <div
-          className="card-image"
-          style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-        />
-        <div className="heading">
-            <p>{title}</p>
-            <div className="author">
-                {date} <span>|</span> <span className="name">{author}</span>
-            </div>
-        </div>
+const NewsCardHome = ({ title, image, author, date, caption, source }) => (
+  <div className="newsCardHome">
+    <img src={image} alt={title} />
+    <div className='heading'>
+      <div className="label">
+        <h3>{title}</h3>
+        <p>{caption}</p>
       </div>
-  );
-};
-
+      <div className="author">
+        <span>{author}</span> | <span>{date}</span>
+      </div>
+    </div>
+  </div>
+);
 
 export default NewsCardHome;

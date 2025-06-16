@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchTrendingNews } from "../../../services/api";
+import { fetchTrendingNews } from '../../../services/api';
 import '../../../css/layout.css'
 
 export default function RunningText() {

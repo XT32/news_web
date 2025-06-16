@@ -13,3 +13,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/employee-dashboard', [DashboardController::class, 'employeeDashboard'])->name('employee.dashboard');
 });
 require __DIR__.'/auth.php';
+
+Route::get('/admin', function () {
+    return view('app');
+});

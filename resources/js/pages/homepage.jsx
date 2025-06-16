@@ -5,7 +5,7 @@ import PopulerNewsCard from '../components/card/populerNewsCard.jsx'
 import NewsCardHome from '../components/card/newsCardHome.jsx'
 import Image from '../../asset/fomo3.jpg'
 import ButtonViewMore from '../components/button/buttonViewMore.jsx'
-import RunningText from '../components/layout/runningText.jsx'
+import RunningText from '../components/layout/runningText.jsx';
 
 
 export default function Homepage(){

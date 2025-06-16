@@ -63,3 +63,46 @@
 .buttonLoginSignup:active {
     box-shadow: none;
 }
+
+/* pagination table */
+.table-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.results-count {
+  color: #555;
+}
+
+.pagination-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.pagination-buttons button {
+  border: 1px solid #ccc;
+  background-color: white;
+  color: #333;
+  padding: 4px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.pagination-buttons button.active {
+  background-color: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+.pagination-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.buttonProfile{
+  background-color: black;
+  cursor: pointer;
+}
