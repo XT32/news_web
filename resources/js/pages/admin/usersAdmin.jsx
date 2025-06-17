@@ -8,8 +8,8 @@ import '../../../css/dashboard.css'
 
 const UsersAdmin = () => {
   const [users, setUsers] = useState([
-    { id: 1, name: "miqdad", email: "miqdad@gmail.com", news: "30" },
-    { id: 2, name: "fauzan", email: "fauzan@gmail.com", news: "30" },
+    { id: 1, name: "Author", email: "Author@gmail.com", news: "30" },
+    { id: 2, name: "", email: "@gmail.com", news: "30" },
     { id: 3, name: "ahmad", email: "ahmad@gmail.com", news: "30" },
     { id: 4, name: "nurul", email: "nurul@gmail.com", news: "30" },
     { id: 5, name: "dina", email: "dina@gmail.com", news: "30" },

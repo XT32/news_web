@@ -14,7 +14,7 @@ const newsMorePage = () => {
     image: Image,
     caption: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
     date: "2 Juni 2025",
-    author: "Miqdad Fauzan"
+    author: "Author "
   };
 
   return (

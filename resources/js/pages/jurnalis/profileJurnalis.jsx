@@ -21,12 +21,12 @@ export default function ProfileJurnalis() {
 
   useEffect(() => {
     setFormData({
-      name: 'Miqdad Fauzan',
-      email: 'miqdad@gmail.com',
+      name: 'Author ',
+      email: 'Author@gmail.com',
       gender: 'male',
       birthDate: '2000-06-15',
       phone: '085749353016',
-      address: 'Tasikmalaya, jawabarat',
+      address: 'Indonesia',
     });
   }, []);
 
