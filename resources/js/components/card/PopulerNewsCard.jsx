@@ -1,11 +1,10 @@
-import '../../../css/card.css'
-
+import '../../../css/card.css';
 
 export default function PopulerNewsCard({ title, image, author, date, caption }) {
   return (
-    <div className="populerNewsCard">
+    <div className="PopulerNewsCard">
       <div className="imageWrapper">
-        <img src={image} alt={title} className="newsImage" />
+        {image && <img src={image} alt={title} />}
       </div>
       <aside>
         <div className="label">
