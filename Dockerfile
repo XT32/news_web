@@ -1,7 +1,7 @@
 FROM laravelsail/php82-composer:latest
 
 # Install Node.js 20.x dan npm terbaru
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get update \
     && apt-get install -y nodejs git \
     && npm install -g npm@latest vite
