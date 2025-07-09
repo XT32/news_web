@@ -3,8 +3,6 @@ import Header from '../components/layout/header.jsx'
 import Footer from '../components/layout/footer.jsx'
 import ButtonFilter from '../components/button/buttonFilter.jsx'
 import NewsMoreCard from '../components/card/newsMoreCard.jsx'
-import Image from '../../asset/fomo3.jpg'
-
 
 
 const newsMorePage = () => {

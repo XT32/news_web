@@ -1,37 +1,24 @@
-# Stage Node for React/Vite
-FROM node:20 AS nodebuild
-WORKDIR /app
-COPY resources/ resources/
-COPY package*.json ./
-RUN npm install
-RUN npm run build
+FROM laravelsail/php82-composer:latest
 
-# Stage Composer for Laravel
-FROM composer:2 AS composerbuild
-WORKDIR /app
-COPY . .
-RUN composer install --no-dev --optimize-autoloader
+# Install Node.js 20.x dan npm terbaru
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get update \
+    && apt-get install -y nodejs git \
+    && npm install -g npm@latest vite
 
-# Production Stage
-FROM php:8.2-fpm
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    libpng-dev libonig-dev libxml2-dev zip unzip git curl
-
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
-
-# Copy app files
+# Set working directory
 WORKDIR /var/www
-COPY --from=composerbuild /app ./
-COPY --from=nodebuild /app/resources/dist ./public/build
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+# Copy existing application directory contents
+COPY . /var/www
 
-# Expose port
-EXPOSE 9000
+# Install PHP dependencies
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Start PHP-FPM
-CMD ["php-fpm"]
+# Install Node dependencies
+RUN npm install
+
+# Expose ports for Laravel and Vite
+EXPOSE 8000 5173
+
+CMD ["/bin/bash"]
