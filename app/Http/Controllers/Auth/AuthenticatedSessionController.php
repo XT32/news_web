@@ -1,78 +1,67 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Handle an incoming web authentication request.
+     * API: Daftar user publik dan aktivitasnya (untuk admin)
      */
-    public function store(Request $request)
+    public function publicUsersActivity()
     {
-        $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
-        if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
-            $request->session()->regenerate();
-            $user = Auth::user();
-
-            if ($user->role === 'admin') {
-                return redirect()->intended(route('admin.dashboard'));
-            } elseif ($user->role === 'karyawan') {
-                return redirect()->intended(route('karyawan.dashboard'));
-            } else {
-                return redirect()->intended(route('user.dashboard'));
-            }
-        }
-
-        throw ValidationException::withMessages([
-            'email' => __('auth.failed'),
-        ]);
-    }
-
-    /**
-     * Handle an incoming API authentication request.
-     */
-    public function apiLogin(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        // Coba autentikasi
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-
-        // Ambil user yang sudah terautentikasi
-        $user = $request->user();
-
-        // Buat token
-        $token = $user->createToken('api-token')->plainTextToken;
+        $totalUsers = \App\Models\User::where('role', 'user')->count();
+        $totalLikes = \App\Models\Like::count();
+        $totalComments = \App\Models\Comment::count();
+        $totalShares = class_exists('App\\Models\\Share') ? \App\Models\Share::count() : 0;
 
         return response()->json([
-            'message' => 'Login success',
-            'user' => $user,
-            'token' => $token,
+            'total_users' => $totalUsers,
+            'total_likes' => $totalLikes,
+            'total_comments' => $totalComments,
+            'total_shares' => $totalShares,
+        ]);
+    }
+    /**
+     * Display the login view.
+     */
+    public function create(): Response
+    {
+        return Inertia::render('Auth/Login', [
+            'canResetPassword' => Route::has('password.request'),
+            'status' => session('status'),
         ]);
     }
 
     /**
-     * Destroy an authenticated session (API logout).
+     * Handle an incoming authentication request.
      */
-    public function destroy(Request $request)
+    public function store(LoginRequest $request): RedirectResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        $request->authenticate();
+        $request->session()->regenerate();
+        // Semua role redirect ke landing page
+        return redirect()->intended('/');
+    }
 
-        return response()->json(['message' => 'Successfully logged out']);
+    /**
+     * Destroy an authenticated session.
+     */
+    public function destroy(Request $request): RedirectResponse
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 }

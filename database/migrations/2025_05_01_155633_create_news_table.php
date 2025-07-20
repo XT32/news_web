@@ -24,6 +24,7 @@ return new class extends Migration
             $table->enum('source_type', ['local', 'api'])->default('local');
             $table->string('url')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
