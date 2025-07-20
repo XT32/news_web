@@ -6,7 +6,6 @@ import NewsMoreCard from '@/Components/Card/NewsMoreCard.jsx';
 import Image from '/images/og-image.png';
 
 
-
 const newsMorePage = () => {
   const newsCard = {
     category: "Politic",
