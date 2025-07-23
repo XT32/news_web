@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'preferences',
     ];
     public function roles()
     {
@@ -53,17 +54,38 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'preferences' => 'json',
     ];
+    
     public function news(): HasMany
     {
         return $this->hasMany(News::class, 'user_id');
     }
+    
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class, 'user_id');
     }
+    
     public function likes(): HasMany
     {
         return $this->hasMany(Like::class, 'user_id');
+    }
+    
+    public function savedNews()
+    {
+        return $this->belongsToMany(News::class, 'saved_news', 'user_id', 'news_id')
+                    ->withTimestamps();
+    }
+    
+    public function readNews()
+    {
+        return $this->belongsToMany(News::class, 'read_news', 'user_id', 'news_id')
+                    ->withTimestamps();
+    }
+    
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
     }
 }

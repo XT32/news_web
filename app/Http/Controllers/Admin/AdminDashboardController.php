@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\News;
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Comment;
+use App\Models\Like;
+use App\Models\Share;
+use App\Models\TrafficAnalytics;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -87,20 +91,84 @@ class AdminDashboardController extends Controller
 
     public function users()
     {
-        // Only show employees, not regular users (for privacy)
-        $employees = User::whereHas('roles', function ($q) {
+        // User statistics and aggregate data for privacy protection
+        $userStats = [
+            'total_users' => User::whereHas('roles', function ($q) {
+                $q->where('name', 'user');
+            })->count(),
+            
+            'users_registered_this_month' => User::whereHas('roles', function ($q) {
+                $q->where('name', 'user');
+            })->whereMonth('created_at', now()->month)->count(),
+            
+            'users_registered_today' => User::whereHas('roles', function ($q) {
+                $q->where('name', 'user');
+            })->whereDate('created_at', today())->count(),
+            
+            'active_users_last_7_days' => User::whereHas('roles', function ($q) {
+                $q->where('name', 'user');
+            })->where('updated_at', '>=', now()->subDays(7))->count(),
+        ];
+
+        // News engagement statistics
+        $newsStats = [
+            'total_news_views' => News::sum('views'),
+            'total_comments' => Comment::count(),
+            'total_likes' => Like::count(),
+            'total_news_shared' => Share::count(),
+            'average_views_per_article' => round(News::avg('views'), 2),
+        ];
+
+        // Traffic statistics by date (last 30 days)
+        $trafficData = [];
+        for ($i = 29; $i >= 0; $i--) {
+            $date = now()->subDays($i);
+            $trafficData[] = [
+                'date' => $date->format('Y-m-d'),
+                'views' => TrafficAnalytics::whereDate('date', $date)->sum('views'),
+                'unique_visitors' => TrafficAnalytics::whereDate('date', $date)->sum('unique_visitors'),
+            ];
+        }
+
+        // Registration trend (last 30 days)
+        $registrationTrend = [];
+        for ($i = 29; $i >= 0; $i--) {
+            $date = now()->subDays($i);
+            $registrationTrend[] = [
+                'date' => $date->format('Y-m-d'),
+                'registrations' => User::whereHas('roles', function ($q) {
+                    $q->where('name', 'user');
+                })->whereDate('created_at', $date)->count(),
+            ];
+        }
+
+        // Most popular categories by user engagement
+        $popularCategories = Category::withCount(['news', 'news as total_views' => function ($q) {
+            $q->selectRaw('sum(views)');
+        }])
+            ->orderBy('total_views', 'desc')
+            ->take(10)
+            ->get();
+
+        // Employee performance (separate from user data)
+        $employeeStats = User::whereHas('roles', function ($q) {
             $q->where('name', 'employee');
         })
-            ->with(['roles'])
             ->withCount(['news', 'news as published_news_count' => function ($q) {
                 $q->where('status', 'published');
             }])
             ->withSum('news', 'views')
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+            ->orderBy('news_count', 'desc')
+            ->take(10)
+            ->get(['id', 'name', 'email', 'created_at']);
 
-        return Inertia::render('Admin/Employees/Index', [
-            'employees' => $employees,
+        return Inertia::render('Admin/Users/Index', [
+            'userStats' => $userStats,
+            'newsStats' => $newsStats,
+            'trafficData' => $trafficData,
+            'registrationTrend' => $registrationTrend,
+            'popularCategories' => $popularCategories,
+            'employeeStats' => $employeeStats,
         ]);
     }
 

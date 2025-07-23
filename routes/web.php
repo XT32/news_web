@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Employee\EmployeeDashboardController;
+use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -41,22 +42,38 @@ Route::middleware(['auth', 'verified', 'role:employee'])->prefix('employee')->gr
 });
 
 // ======================== USER (READER) ROUTES ========================
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        $user = Auth::user();
-        return Inertia::render('User/Dashboard', [
-            'user' => $user,
-            'notifications' => $user->notifications ?? [],
-        ]);
-    })->name('user.dashboard');
-
-    // Profile, notification, ganti password
-    // Route profile handled below (ProfileController@edit)
-    Route::get('/notifications', fn() => Inertia::render('User/Notifications'))->name('user.notifications');
-    Route::get('/password/change', fn() => Inertia::render('User/ChangePassword'))->name('user.password.change');
+Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
+    Route::get('/saved-news', [UserController::class, 'savedNews'])->name('user.saved-news');
+    Route::get('/notifications', [UserController::class, 'notifications'])->name('user.notifications');
+    Route::get('/preferences', [UserController::class, 'preferences'])->name('user.preferences');
+    Route::get('/password/change', [UserController::class, 'changePassword'])->name('user.password.change');
 });
 
-// ...existing code...
+// ======================== USER API ROUTES ========================
+Route::middleware(['auth', 'verified'])->prefix('api/user')->group(function () {
+    Route::get('/recent-news', [UserController::class, 'getRecentNews']);
+    Route::get('/saved-news', [UserController::class, 'getUserSavedNews']);
+    Route::get('/stats', [UserController::class, 'getUserStats']);
+    Route::get('/notifications', [UserController::class, 'getUserNotifications']);
+    Route::get('/preferences', [UserController::class, 'getUserPreferences']);
+    Route::put('/preferences', [UserController::class, 'updateUserPreferences']);
+    Route::post('/save-news', [UserController::class, 'saveNews']);
+    Route::delete('/unsave-news/{newsId}', [UserController::class, 'unsaveNews']);
+    Route::patch('/notifications/{notificationId}/read', [UserController::class, 'markNotificationAsRead']);
+    Route::patch('/notifications/mark-all-read', [UserController::class, 'markAllNotificationsAsRead']);
+    Route::delete('/notifications/{notificationId}', [UserController::class, 'deleteNotification']);
+});
+
+// ======================== PUBLIC API ROUTES ========================
+Route::prefix('api')->group(function () {
+    Route::get('/categories', function () {
+        return response()->json([
+            'success' => true,
+            'data' => \App\Models\Category::all()
+        ]);
+    });
+});
 
 // ======================== PUBLIC PAGES ========================
 Route::get('/about', fn() => view('about'))->name('about');

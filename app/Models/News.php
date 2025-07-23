@@ -22,6 +22,8 @@ class News extends Model
         'summary',
         'content',
         'thumbnail',
+        'meta_description',
+        'meta_keywords',
         'status',
         'source_type',
         'user_id',

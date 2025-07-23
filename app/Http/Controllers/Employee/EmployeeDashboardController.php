@@ -61,20 +61,34 @@ class EmployeeDashboardController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|unique:news,slug',
-            'excerpt' => 'nullable|string',
-            'content' => 'required|string',
-            'thumbnail' => 'nullable|url',
+            'excerpt' => 'nullable|string|max:500',
+            'content' => 'required|string|min:100',
+            'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120', // 5MB max
+            'meta_description' => 'nullable|string|max:160',
+            'meta_keywords' => 'nullable|string|max:255',
             'status' => 'required|in:draft,published',
             'categories' => 'required|array|min:1',
             'categories.*' => 'exists:categories,id',
         ]);
 
+        $thumbnailUrl = null;
+        
+        // Handle file upload
+        if ($request->hasFile('thumbnail')) {
+            $file = $request->file('thumbnail');
+            $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/news'), $filename);
+            $thumbnailUrl = '/images/news/' . $filename;
+        }
+
         $news = Auth::user()->news()->create([
             'title' => $request->title,
             'slug' => $request->slug,
-            'excerpt' => $request->excerpt,
+            'excerpt' => $request->excerpt ?: Str::limit(strip_tags($request->content), 200),
             'content' => $request->content,
-            'thumbnail' => $request->thumbnail,
+            'thumbnail' => $thumbnailUrl,
+            'meta_description' => $request->meta_description ?: Str::limit(strip_tags($request->content), 160),
+            'meta_keywords' => $request->meta_keywords,
             'status' => $request->status,
             'source_type' => 'local',
         ]);
@@ -103,22 +117,41 @@ class EmployeeDashboardController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|unique:news,slug,' . $id,
-            'excerpt' => 'nullable|string',
-            'content' => 'required|string',
-            'thumbnail' => 'nullable|url',
+            'excerpt' => 'nullable|string|max:500',
+            'content' => 'required|string|min:100',
+            'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120', // 5MB max
+            'meta_description' => 'nullable|string|max:160',
+            'meta_keywords' => 'nullable|string|max:255',
             'status' => 'required|in:draft,published',
             'categories' => 'required|array|min:1',
             'categories.*' => 'exists:categories,id',
         ]);
 
         $news = Auth::user()->news()->findOrFail($id);
+        
+        $thumbnailUrl = $news->thumbnail;
+        
+        // Handle file upload
+        if ($request->hasFile('thumbnail')) {
+            // Delete old thumbnail if exists
+            if ($news->thumbnail && file_exists(public_path($news->thumbnail))) {
+                unlink(public_path($news->thumbnail));
+            }
+            
+            $file = $request->file('thumbnail');
+            $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/news'), $filename);
+            $thumbnailUrl = '/images/news/' . $filename;
+        }
 
         $news->update([
             'title' => $request->title,
             'slug' => $request->slug,
-            'excerpt' => $request->excerpt,
+            'excerpt' => $request->excerpt ?: Str::limit(strip_tags($request->content), 200),
             'content' => $request->content,
-            'thumbnail' => $request->thumbnail,
+            'thumbnail' => $thumbnailUrl,
+            'meta_description' => $request->meta_description ?: Str::limit(strip_tags($request->content), 160),
+            'meta_keywords' => $request->meta_keywords,
             'status' => $request->status,
         ]);
 
