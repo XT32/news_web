@@ -3,7 +3,6 @@ import Header from '@/Components/Layout/Header.jsx';
 import Footer from '@/Components/Layout/Footer.jsx';
 import ButtonFilter from '@/Components/Button/ButtonFilter.jsx';
 import NewsMoreCard from '@/Components/Card/NewsMoreCard.jsx';
-import Image from '/images/og-image.png';
 
 
 const newsMorePage = () => {
