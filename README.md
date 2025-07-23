@@ -1,11 +1,163 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel News Web
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Modern news website built with Laravel 12, React 19, and Inertia.js featuring role-based authentication and content management.
+
+## Features
+
+- **Role-Based Authentication**: Admin, Employee, and User roles with specific permissions
+- **Admin Dashboard**: Monitoring and analytics for website performance
+- **Employee Panel**: Content creation and management for news articles
+- **User Interface**: Clean, responsive design for reading news
+- **Soft Delete**: Articles are soft-deleted to maintain data integrity
+- **Real-time Updates**: Live content updates with Inertia.js
+
+## Technology Stack
+
+- **Backend**: Laravel 12, MySQL 8.0
+- **Frontend**: React 19, Inertia.js, Tailwind CSS
+- **Tools**: Vite, NPM, Composer
+
+## Quick Start
+
+### Prerequisites
+
+- PHP 8.2+
+- Node.js 18+
+- MySQL 8.0+
+- Composer
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd news_web
+   ```
+
+2. **Start development environment**
+   ```bash
+   ./dev-start.sh
+   ```
+   
+   Or manually:
+   ```bash
+   # Install dependencies
+   composer install
+   npm install
+   
+   # Setup environment
+   cp .env.example .env
+   php artisan key:generate
+   
+   # Database setup
+   php artisan migrate
+   php artisan db:seed
+   
+   # Start servers
+   composer run dev
+   ```
+
+3. **Access the application**
+   - Laravel API: http://localhost:8000
+   - React Frontend: http://localhost:5173
+
+## User Roles & Access
+
+### Admin
+- **Purpose**: Monitor website performance and manage employees
+- **Access**: 
+  - Dashboard with analytics and charts
+  - Employee performance monitoring
+  - User registration trends
+  - Category management
+- **Restrictions**: Cannot create/edit articles (monitoring only)
+
+### Employee
+- **Purpose**: Create and manage news content
+- **Access**:
+  - Article creation and editing
+  - Personal dashboard with statistics
+  - Content management tools
+- **Features**: Full CRUD operations on articles with soft delete
+
+### User
+- **Purpose**: Read news content
+- **Access**: 
+  - Browse and read articles
+  - User dashboard
+  - Account management
+- **Privacy**: Admin cannot manage individual user data (privacy compliance)
+
+## Development Commands
+
+```bash
+# Start development servers
+composer run dev
+
+# Database operations
+php artisan migrate
+php artisan db:seed
+php artisan migrate:fresh --seed
+
+# Clear caches
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+
+# Run tests
+php artisan test
+
+# Frontend development
+npm run dev       # Start Vite dev server
+npm run build     # Build for production
+npm run lint      # Check code quality
+npm run format    # Format code with Prettier
+```
+
+## Database Structure
+
+- **Users**: Authentication with role-based permissions
+- **News**: Articles with soft delete, categories, and view tracking
+- **Categories**: Organize news content
+- **Roles**: Admin, Employee, User permissions
+- **Soft Deletes**: Maintain data integrity for deleted articles
+
+## API Endpoints
+
+### Public Routes
+- `GET /` - Home page with news listing
+- `GET /news/{slug}` - Individual article view
+- `GET /category/{slug}` - Category news listing
+
+### Authentication
+- `GET /login` - Login page
+- `POST /login` - Authenticate user
+- `GET /register` - Registration page
+- `POST /register` - Create new user account
+
+### Admin Routes (Protected)
+- `GET /admin/dashboard` - Analytics dashboard
+- `GET /admin/users` - Employee management
+- `GET /admin/categories` - Category management
+
+### Employee Routes (Protected)
+- `GET /employee/dashboard` - Employee dashboard
+- `GET /employee/news` - Article management
+- `POST /employee/news` - Create new article
+- `PUT /employee/news/{id}` - Update article
+- `DELETE /employee/news/{id}` - Soft delete article
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 ## About Laravel
 

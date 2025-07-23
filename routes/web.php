@@ -1,55 +1,43 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Employee\EmployeeDashboardController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-// Global Landing Page (Publik)
-Route::get('/', function () {
-    // Landing page benar-benar global, tanpa data user/berita
-    return Inertia::render('Landing');
-})->name('landing');
+// Public Routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/news/{slug}', [HomeController::class, 'show'])->name('news.show');
+Route::get('/category/{slug}', [HomeController::class, 'category'])->name('category.show');
 
-// SPA Login/Register handled by Auth controllers (see routes/auth.php)
+// Authentication Routes
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ======================== ADMIN ROUTES ========================
-Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
-    Route::get('/', function () {
-        $user = Auth::user();
-        abort_unless($user->roles->pluck('name')->contains('admin'), 403);
-        return Inertia::render('Admin/AdminDashboard');
-    })->name('admin.dashboard');
-
-    // Data seluruh user & karyawan
-    Route::get('/users', fn() => Inertia::render('Admin/Users'))->name('admin.users');
-    Route::get('/employees', fn() => Inertia::render('Admin/Employees'))->name('admin.employees');
-
-    // Data seluruh berita (audit), performa berita, statistik interaksi
-    Route::get('/news', fn() => Inertia::render('Admin/NewsManagement'))->name('admin.news');
-    Route::get('/news-performance', fn() => Inertia::render('Admin/NewsPerformance'))->name('admin.news.performance');
-    Route::get('/employee-performance', fn() => Inertia::render('Admin/EmployeePerformance'))->name('admin.employee.performance');
+Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/users', [AdminDashboardController::class, 'users'])->name('admin.users');
+    Route::get('/categories', [AdminDashboardController::class, 'categories'])->name('admin.categories');
 });
 
 // ======================== EMPLOYEE ROUTES ========================
-Route::middleware(['auth', 'verified'])->prefix('employee')->group(function () {
-    Route::get('/', function () {
-        $user = Auth::user();
-        abort_unless($user->roles->pluck('name')->contains('karyawan'), 403);
-        return Inertia::render('Employee/EmployeeDashboard');
-    })->name('employee.dashboard');
-
-    // CRUD berita (upload, edit, soft delete)
-    Route::get('/news', fn() => Inertia::render('Employee/NewsDashboard'))->name('employee.news');
-    Route::get('/news/list', [NewsController::class, 'getEmployeeNews'])->name('employee.news.list');
-    Route::post('/news', [NewsController::class, 'uploadNews'])->name('employee.news.upload');
-    Route::put('/news/{id}', [NewsController::class, 'updateNews'])->name('employee.news.update');
-    Route::delete('/news/{id}', [NewsController::class, 'softDeleteNews'])->name('employee.news.softdelete');
-    Route::post('/news/{id}/restore', [NewsController::class, 'restoreNews'])->name('employee.news.restore');
-
-    // Statistik berita sendiri
-    Route::get('/news/{id}/stats', [NewsController::class, 'employeeNewsStats'])->name('employee.news.stats');
+Route::middleware(['auth', 'verified', 'role:employee'])->prefix('employee')->group(function () {
+    Route::get('/dashboard', [EmployeeDashboardController::class, 'index'])->name('employee.dashboard');
+    Route::get('/news', [EmployeeDashboardController::class, 'news'])->name('employee.news');
+    Route::get('/news/create', [EmployeeDashboardController::class, 'createNews'])->name('employee.news.create');
+    Route::post('/news', [EmployeeDashboardController::class, 'storeNews'])->name('employee.news.store');
+    Route::get('/news/{id}/edit', [EmployeeDashboardController::class, 'editNews'])->name('employee.news.edit');
+    Route::put('/news/{id}', [EmployeeDashboardController::class, 'updateNews'])->name('employee.news.update');
+    Route::delete('/news/{id}', [EmployeeDashboardController::class, 'deleteNews'])->name('employee.news.delete');
 });
 
 // ======================== USER (READER) ROUTES ========================
@@ -83,4 +71,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

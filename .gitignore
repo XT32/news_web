@@ -13,7 +13,6 @@
 .env
 .env.*
 !.env.example
-!.env.codespaces
 .phpunit.result.cache
 /.phpunit.cache
 /.vscode
@@ -26,12 +25,6 @@ Thumbs.db
 npm-debug.log
 yarn-error.log
 composer.lock
-docker-compose.override.yml
 /public/storage
 /auth.json
 /coverage
-
-# Codespaces specific
-.vscode/settings.json
-!.vscode/tasks.json
-!.devcontainer/
