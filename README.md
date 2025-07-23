@@ -13,7 +13,7 @@ Modern news website built with Laravel 12, React 19, and Inertia.js featuring ro
 
 ## Technology Stack
 
-- **Backend**: Laravel 12, MySQL 8.0
+- **Backend**: Laravel 12, SQLite/MySQL
 - **Frontend**: React 19, Inertia.js, Tailwind CSS
 - **Tools**: Vite, NPM, Composer
 
@@ -23,7 +23,6 @@ Modern news website built with Laravel 12, React 19, and Inertia.js featuring ro
 
 - PHP 8.2+
 - Node.js 18+
-- MySQL 8.0+
 - Composer
 
 ### Installation
@@ -34,12 +33,13 @@ Modern news website built with Laravel 12, React 19, and Inertia.js featuring ro
    cd news_web
    ```
 
-2. **Start development environment**
+2. **Automated setup (recommended)**
    ```bash
-   ./dev-start.sh
+   chmod +x setup.sh
+   ./setup.sh
    ```
-   
-   Or manually:
+
+3. **Manual setup**
    ```bash
    # Install dependencies
    composer install
@@ -49,15 +49,20 @@ Modern news website built with Laravel 12, React 19, and Inertia.js featuring ro
    cp .env.example .env
    php artisan key:generate
    
-   # Database setup
+   # Setup database
    php artisan migrate
    php artisan db:seed
-   
-   # Start servers
-   composer run dev
    ```
 
-3. **Access the application**
+4. **Start development servers**
+   ```bash
+   ./dev-start.sh
+   # OR manually:
+   # Terminal 1: php artisan serve
+   # Terminal 2: npm run dev
+   ```
+
+5. **Access the application**
    - Laravel API: http://localhost:8000
    - React Frontend: http://localhost:5173
 
