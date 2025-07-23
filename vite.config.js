@@ -16,5 +16,34 @@ export default defineConfig({
         hmr: {
             host: 'localhost'
         }
+    },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    // Vendor dependencies
+                    vendor: ['react', 'react-dom'],
+                    // Chart.js related
+                    charts: ['chart.js', 'react-chartjs-2'],
+                    // UI components
+                    ui: ['@headlessui/react', 'react-icons'],
+                    // Editor
+                    editor: ['@uiw/react-md-editor'],
+                    // Router
+                    router: ['react-router-dom'],
+                    // Utilities
+                    utils: ['axios', 'date-fns']
+                }
+            }
+        },
+        chunkSizeWarningLimit: 1000, // Increase limit to 1000 kB
+        target: 'esnext',
+        minify: 'terser',
+        terserOptions: {
+            compress: {
+                drop_console: true,
+                drop_debugger: true
+            }
+        }
     }
 });
